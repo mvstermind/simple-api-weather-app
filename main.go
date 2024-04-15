@@ -2,11 +2,13 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
 	"weather-app/api"
 	request "weather-app/handleRequest"
+	WeatherJson "weather-app/json"
 )
 
 var url string = "https://api.openweathermap.org/data/2.5/weather?q=%s&units=metric&appid=%s"
@@ -25,5 +27,23 @@ func main() {
 	frmtdUrl := fmt.Sprintf(url, cityName, api.ApiKey)
 
 	body := request.ApiRequest(frmtdUrl)
-	fmt.Print(body)
+
+	var Weather WeatherJson.S
+
+	err = json.Unmarshal([]byte(body), &Weather)
+	if err != nil {
+		fmt.Printf("Error unmarshaling JSON: %v\n", err)
+		return
+	}
+	PrintJsonContent(Weather)
+}
+func PrintJsonContent(Weather WeatherJson.S) {
+
+	fmt.Printf("Temperature: %v C\n", Weather.Main.Temp)
+	fmt.Printf("Max Temperature: %v C\n", Weather.Main.TempMax)
+	fmt.Printf("Min Temperature: %v C\n", Weather.Main.TempMin)
+	fmt.Printf("Feels Like: %v C\n", Weather.Main.FeelsLike)
+	fmt.Printf("Humidity: %v%%\n", Weather.Main.Humidity)
+	fmt.Printf("Pressure: %v hPa\n", Weather.Main.Pressure)
+	fmt.Printf("Wind Speed: %v Km\\H\n", Weather.Wind.Speed)
 }
