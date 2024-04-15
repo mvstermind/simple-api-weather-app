@@ -12,6 +12,7 @@ import (
 )
 
 var url string = "https://api.openweathermap.org/data/2.5/weather?q=%s&units=metric&appid=%s"
+var Weather WeatherJson.S
 
 func main() {
 
@@ -24,19 +25,19 @@ func main() {
 	}
 
 	cityName = strings.TrimSpace(cityName)
-	frmtdUrl := fmt.Sprintf(url, cityName, api.ApiKey)
+	frmtdUrl := fmt.Sprintf(url, cityName, api.ApiKey) //combine user input with api key
 
-	body := request.ApiRequest(frmtdUrl)
+	body := request.ApiRequest(frmtdUrl) // read api using combined link
 
-	var Weather WeatherJson.S
-
-	err = json.Unmarshal([]byte(body), &Weather)
+	err = json.Unmarshal([]byte(body), &Weather) // read json
 	if err != nil {
 		fmt.Printf("Error unmarshaling JSON: %v\n", err)
 		return
 	}
-	PrintJsonContent(Weather)
+	PrintJsonContent(Weather) // print content
 }
+
+// i have lieterall no clue how to export this
 func PrintJsonContent(Weather WeatherJson.S) {
 
 	fmt.Printf("Temperature: %v C\n", Weather.Main.Temp)
