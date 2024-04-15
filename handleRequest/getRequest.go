@@ -8,18 +8,23 @@ import (
 
 func ApiRequest(url string) string {
 
-	res, err := http.Get(url) // get response
-	if err != nil {
-		fmt.Printf("Error: %v", err)
-		return ""
-	}
-	defer res.Body.Close() // close after reading all content of request
+	// check if site responses first
+	if http.StatusOK == 200 {
 
-	body, err := io.ReadAll(res.Body) // read all json content
-	if err != nil {
-		fmt.Printf("Error: %v", err)
-		return ""
-	}
+		res, err := http.Get(url) // get response
+		if err != nil {
+			fmt.Printf("Error: %v", err)
+			return ""
+		}
+		defer res.Body.Close() // close after reading all content of request
 
-	return string(body) // return json as string isntead of slice
+		body, err := io.ReadAll(res.Body) // read all json content
+		if err != nil {
+			fmt.Printf("Error: %v", err)
+			return ""
+		}
+
+		return string(body) // return json as string isntead of slice
+	}
+	return ""
 }
